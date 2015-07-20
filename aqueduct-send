@@ -1,0 +1,29 @@
+#!/usr/bin/python3
+
+import json
+from sys import exit
+
+
+
+Aqueduct = {}
+try:
+	f = open('debian/Aqueduct', 'r')
+	Aqueduct = json.load(f)
+	f.close()
+except ValueError:
+	print("Aqueduct file contains invalid json")
+	exit(1)
+except:
+	print("Unable to read Aqueduct file (IE cannot find ./debian/Aqueduct)")
+	exit(1)
+
+
+
+if 'version' not in Aqueduct:
+	print('ERROR: Expected Aqueduct file to have a key called value.')
+	exit(1)
+
+if Aqueduct['version'] < 1:
+	print("WARNING: Aqueduct file version " + str(Aqueduct['version']) + " is a TEMPORARY and UNSTABLE specification. Do NOT use it in production.")
+else:
+	print("ERROR: Unrecognized Aqueduct format version. Perhaps this client is out of date?")
