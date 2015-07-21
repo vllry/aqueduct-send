@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 import json
-from os import path
+from os import path, popen
 import requests
 from sys import argv, exit
 import tarfile
@@ -19,6 +19,10 @@ def get_target_address(Aqueduct):
 		return argv[1]
 	return Aqueduct['target']
 
+
+
+def upload(filepath, url):
+	print(popen('curl -i -F name=test -F data=@%s %s' % (filepath, url)).read())
 
 
 Aqueduct = {}
@@ -42,8 +46,8 @@ if 'version' not in Aqueduct:
 
 if Aqueduct['version'] < 1:
 	print("WARNING: Aqueduct file version " + str(Aqueduct['version']) + " is a TEMPORARY and UNSTABLE specification. Do NOT use it in production.")
-	#make_tarfile('../aqueduct-temp.tar.gz', '.')
-	requests.post('http://localhost:5600/submit', {'file': open('../aqueduct-temp.tar.gz', 'rb')})
+	make_tarfile('../aqueduct-temp.tar.gz', '.')
+	upload('../aqueduct-temp.tar.gz', 'http://localhost:6500/submit')
 
 else:
 	print("ERROR: Unrecognized Aqueduct format version. Perhaps this client is out of date?")
