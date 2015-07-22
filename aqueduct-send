@@ -2,7 +2,6 @@
 
 import json
 from os import path, popen
-import requests
 from sys import argv, exit
 import tarfile
 
