@@ -2,6 +2,7 @@
 
 import json
 from os import path, popen
+import requests
 from sys import argv, exit
 import tarfile
 
@@ -20,8 +21,15 @@ def get_target_address(Aqueduct):
 
 
 
-def upload(filepath, url):
-	print(popen('curl -i -F name=test -F data=@%s %s' % (filepath, url)).read())
+def upload(path, url):
+	f = open(path, 'rb')
+	r = requests.post(
+		url,
+		data = {},
+		files =  {'data':f}
+	)
+	print(r.text)
+
 
 
 Aqueduct = {}
