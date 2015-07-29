@@ -1,0 +1,4 @@
+debian/aqueduct-send.debhelper.log
+debian/aqueduct-send.substvars
+debian/aqueduct-send/
+debian/files
