@@ -1,0 +1,14 @@
+Source: aqueduct-send
+Section: unknown
+Priority: optional
+Maintainer: Vallery Lancey <vallerylancey@gmail.com>
+Build-Depends: debhelper (>= 9)
+Standards-Version: 3.9.5
+Homepage: https://github.com/vllry/aqueduct-send
+Vcs-Git: git://github.com/vllry/aqueduct-send.git
+
+Package: aqueduct-send
+Architecture: all
+Depends: ${misc:Depends}, python3, python3-json, python3-libaqueduct (>= 0.0.1)
+Description: Aqueduct package uploader
+ Uploads Aqueduct working trees.
