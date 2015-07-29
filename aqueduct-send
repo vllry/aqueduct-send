@@ -36,7 +36,7 @@ if 'version' not in Aqueduct:
 
 if Aqueduct['version'] < 1:
 	print("WARNING: Aqueduct file version " + str(Aqueduct['version']) + " is a TEMPORARY and UNSTABLE specification. Do NOT use it in production.")
-	lib.targz('../aqueduct-temp.tar.gz', '.')
+	lib.targz('.', '../aqueduct-temp.tar.gz')
 	lib.upload('../aqueduct-temp.tar.gz', 'http://localhost:6500/submit')
 
 else:
