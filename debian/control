@@ -9,6 +9,6 @@ Vcs-Git: git://github.com/vllry/aqueduct-send.git
 
 Package: aqueduct-send
 Architecture: all
-Depends: ${misc:Depends}, python3, python3-libaqueduct (>= 0.0.1)
+Depends: ${misc:Depends}, python3, python3-libaqueduct (>= 0.1.0)
 Description: Aqueduct package uploader
  Uploads Aqueduct working trees.

@@ -25,7 +25,7 @@ except ValueError:
 	print("Aqueduct file contains invalid json")
 	exit(1)
 except:
-	print("Unable to read Aqueduct file (IE cannot find ./debian/Aqueduct)")
+	print("Unable to read Aqueduct file (IE cannot read ./debian/Aqueduct)")
 	exit(1)
 
 
@@ -34,10 +34,22 @@ if 'version' not in Aqueduct:
 	print('ERROR: Expected Aqueduct file to have a key called version.')
 	exit(1)
 
-if Aqueduct['version'] < 1:
+
+if Aqueduct['version'] >= 0 and Aqueduct['version'] < 1:
 	print("WARNING: Aqueduct file version " + str(Aqueduct['version']) + " is a TEMPORARY and UNSTABLE specification. Do NOT use it in production.")
 	lib.targz('.', '../aqueduct-temp.tar.gz')
-	lib.upload('../aqueduct-temp.tar.gz', 'http://localhost:6500/submit')
+
+	gpg = lib.GPG(Aqueduct['uploader'], '/home/vallery/.gnupg')
+	gpg.sign_and_encrypt_file('../aqueduct-temp.tar.gz', Aqueduct['recipient'])
+
+	f = open('../aqueduct-temp.tar.gz.asc')
+	lib.upload(
+		'../aqueduct-temp.tar.gz.gpg',
+		Aqueduct['target']+'/submit',
+		{'signature' : f.read()}
+	)
+	f.close()
+
 
 else:
 	print("ERROR: Unrecognized Aqueduct format version. Perhaps this client is out of date?")
