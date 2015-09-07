@@ -8,15 +8,36 @@ import libaqueduct as lib
 
 
 
+def get_argument(flags, arglist):
+	length = len(arglist)
+	for flag in flags:
+		if len(flag) == 1:
+			flag = '-' + flag
+		else:
+			flag = '--' + flag
+		for i in range(0,length):
+			if flag == arglist[i] and i != length-1:
+				return arglist[i+1]
+	return None
+
+
 def get_target_address(Aqueduct):
-	if len(argv) > 1:
-		return argv[1]
+	dest = get_argument(['destination', 'd'], argv)
+	if dest:
+		return dest
 	return Aqueduct['target']
 
 
 
-Aqueduct = {}
+address = get_argument(['get-server-key'], argv)
+if address:
+	gpg = lib.GPG('Dummy User', '/home/vallery/.gnupg', False, False)
+	gpg.import_key(lib.download(address.strip('/')+'/pubkey'))
+	print("Downloaded and imported the public key for %s" % (address))
+	exit(0)
 
+
+Aqueduct = {}
 try:
 	f = open('debian/Aqueduct', 'r')
 	Aqueduct = json.load(f)
@@ -27,6 +48,7 @@ except ValueError:
 except:
 	print("Unable to read Aqueduct file (IE cannot read ./debian/Aqueduct)")
 	exit(1)
+gpg = lib.GPG(Aqueduct['uploader'], '/home/vallery/.gnupg')
 
 
 
@@ -39,13 +61,11 @@ if Aqueduct['version'] >= 0 and Aqueduct['version'] < 1:
 	print("WARNING: Aqueduct file version " + str(Aqueduct['version']) + " is a TEMPORARY and UNSTABLE specification. Do NOT use it in production.")
 	lib.targz('.', '../aqueduct-temp.tar.gz')
 
-	gpg = lib.GPG(Aqueduct['uploader'], '/home/vallery/.gnupg')
 	gpg.sign_and_encrypt_file('../aqueduct-temp.tar.gz', Aqueduct['recipient'])
-
 	f = open('../aqueduct-temp.tar.gz.asc')
 	lib.upload(
 		'../aqueduct-temp.tar.gz.gpg',
-		Aqueduct['target']+'/submit',
+		get_target_address(Aqueduct)+'/submit',
 		{'signature' : f.read()}
 	)
 	f.close()
